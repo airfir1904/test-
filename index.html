@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AirFir</title>
+  <link rel="icon" type="image/png" href="airfir2.png" />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <style>
+    /* Reset & Base */
+    * {
+      box-sizing: border-box;
+    }
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+
+     background-image: url('https://static.vecteezy.com/system/resources/previews/022/012/188/non_2x/white-studio-room-background-with-spotlight-on-illustrator-generative-ai-free-photo.jpg'); /* ← đổi đường dẫn hình bạn muốn */
+     background-size: cover;
+     background-position: center;
+     background-repeat: no-repeat;
+      background-attachment: fixed;
+
+     color: #ffffff;
+     overflow-x: hidden;
+     -webkit-font-smoothing: antialiased;
+     -moz-osx-font-smoothing: grayscale;
+     position: relative;
+}
+   body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.5); /* trắng mờ. Dùng rgba(0,0,0,0.4) nếu thích nền tối */
+    z-index: -1;
+    pointer-events: none;
+}
+  
+  
+.password-logo {
+  width: 250px;
+  margin-bottom: 24px;
+  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8));
+  animation: fadeInLogo 1s ease-in-out;
+}
+
+/* Hiệu ứng mờ vào */
+@keyframes fadeInLogo {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+    a {
+      color: inherit;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    a:focus {
+      outline: 2px solid #000;
+      outline-offset: 2px;
+    }
+    /* Layout */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      width: 100%;
+    }
+    header {
+      background: url('https://cdn-media.sforum.vn/storage/app/media/giangnguyen/trang-mau-la-gi-13.jpg') center center/cover no-repeat;
+      color: #fff;
+      padding: 0 24px;
+      height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      font-weight: 700;
+      user-select: none;
+      position: relative;
+    }
+    /* Dark overlay on header for readability */
+    header::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1;
+      border-radius: 0;
+    }
+    /* Header content container to stack above overlay */
+    header > * {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+    }
+    #logo {
+      font-size: 1.8rem;
+      font-weight: 900;
+      letter-spacing: 2px;
+      user-select: none;
+      padding-right: 24px;
+      white-space: nowrap;
+    }
+    nav {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #aaa transparent;
+    }
+    nav::-webkit-scrollbar {
+      height: 6px;
+    }
+    nav::-webkit-scrollbar-thumb {
+      background-color: #aaa;
+      border-radius: 3px;
+    }
+    nav::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    nav a {
+      flex: 0 0 auto;
+      padding: 10px 18px;
+      border-radius: 8px;
+      transition: background-color 0.25s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 600;
+      white-space: nowrap;
+      color: #eee;
+    }
+    nav a:hover,
+    nav a[aria-current="page"] {
+      background: #fff;
+      color: #000;
+      font-weight: 700;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.35);
+    }
+
+    main {
+      flex-grow: 1;
+      padding: 24px 20px;
+      max-width: 1024px;
+      margin: 0 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid;
+      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 32px 24px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.12);
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 1.2rem;
+      text-align: center;
+      color: #ffffff;
+    }
+    .card:hover, .card:focus {
+      box-shadow: 0 8px 16px rgba(0,0,0,0.25);
+      transform: translateY(-6px);
+      outline: none;
+    }
+  .card-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap; /* co lại nếu nhỏ màn hình */
+    margin-top: 20px;
+  }
+
+  .card {
+    background-color: #ffffff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: 0.2s;
+    cursor: pointer;
+    min-width: 140px;
+  }
+
+  .card:hover {
+    background-color: #eaeaea;
+    transform: translateY(-3px);
+  }
+
+  .card a {
+    text-decoration: none;
+    color: #ff0000;
+    font-weight: 600;
+  }
+
+
+    /* Pages content */
+    .page {
+      display: none;
+      animation: fadeInPage 0.4s ease forwards;
+    }
+    .page.active {
+      display: block;
+    }
+    @keyframes fadeInPage {
+      from {opacity: 0; transform: translateY(6px);}
+      to {opacity: 1; transform: translateY(0);}
+    }
+
+    /* Subpage back button */
+    .back-button {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #111;
+      color: #fff;
+      border: none;
+      padding: 8px 20px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s ease;
+    }
+    .back-button:hover,
+    .back-button:focus {
+      background: #333;
+      outline: none;
+    }
+
+    /* Content text container */
+    .content-text {
+      background: #f9f9f9;
+      color: #000000;
+      padding: 30px 28px;
+      border-radius: 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      font-size: 1.1rem;
+      line-height: 1.5;
+      max-width: 760px;
+      margin: 0 auto;
+      white-space: pre-line;
+      user-select: text;
+    }
+
+    /* Password overlay mask */
+    #passwordOverlay {
+     position: fixed;
+     inset: 0;
+     background: url('https://static.vecteezy.com/system/resources/thumbnails/031/411/730/small_2x/ai-generated-ai-generative-evening-night-nature-outdoor-landscape-background-full-moon-and-mountains-graphic-art-photo.jpg') center center / cover no-repeat, #000;
+     color: #ffffff;
+     display: flex;
+     flex-direction: column;
+     justify-content: center;
+     align-items: center;
+      z-index: 10000;
+    }
+    #passwordOverlay h2 {
+      font-weight: 700;
+      font-size: 2rem;
+      margin-bottom: 24px;
+    }
+    #passwordOverlay input[type="password"] {
+      padding: 12px 20px;
+      font-size: 1.2rem;
+      border-radius: 10px;
+      border: none;
+      width: 280px;
+      max-width: 90vw;
+      margin-bottom: 16px;
+      outline-offset: 3px;
+    }
+    #passwordOverlay button {
+      padding: 12px 24px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      color: #000;
+      background: #fff;
+      border: none;
+      border-radius: 10px;
+      transition: background-color 0.3s ease;
+      user-select: none;
+      width: 280px;
+      max-width: 90vw;
+    }
+    #passwordOverlay button:hover, #passwordOverlay button:focus {
+      background: #e0e0e0;
+      outline: none;
+    }
+    #passwordError {
+      color: #fffb00;
+      margin-top: 12px;
+      font-weight: 600;
+      min-height: 1.2rem;
+    }
+
+    /* Scrollbar customization */
+    main::-webkit-scrollbar {
+      width: 8px;
+    }
+    main::-webkit-scrollbar-track {
+      background: #eee;
+      border-radius: 8px;
+    }
+    main::-webkit-scrollbar-thumb {
+      background-color: #bbb;
+      border-radius: 8px;
+      border: 2px solid #eee;
+    }
+    main::-webkit-scrollbar-thumb:hover {
+      background-color: #999;
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .cards-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+      header {
+        height: 70px;
+        padding: 0 16px;
+      }
+      #logo {
+        font-size: 1.4rem;
+        padding-right: 12px;
+      }
+      nav a {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+      }
+      .card {
+        padding: 24px 16px;
+        font-size: 1rem;
+      }
+      main {
+        padding: 16px 12px;
+      }
+      .back-button {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+      }
+      #passwordOverlay input[type="password"],
+      #passwordOverlay button {
+        width: 90vw;
+      }
+    }
+
+
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(180px, 1fr));
+  gap: 30px 60px; /* dọc 30px, ngang 60px */
+  justify-content: center;
+  max-width: 800px;
+  margin: 60px auto 0;
+}
+
+
+.card {
+  width: 180px;
+  height: 120px;
+  border-radius: 16px;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+}
+
+/* Background riêng cho từng mục */
+.card-1 { background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20230712/pngtree-dark-themed-notebook-and-pen-set-against-a-black-background-in-image_3844244.jpg'); } /* Schritt */
+.card-2 { background-image: url('data:image/jpeg;base64,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'); } /* Dokumenten */
+.card-3 { background-image: url('https://thegioivangnhapkhau.com/wp-content/uploads/2023/04/cach-chon-ly-vang-do-2.jpg'); } /* Wortschatz */
+.card-4 { background-image: url('https://img.tripi.vn/cdn-cgi/image/width=700,height=700/https://gcs.tripi.vn/public-tripi/tripi-feed/img/474075bsI/background-ca-phe-chuyen-nghiep_034337030.jpg'); } /* Studienkolleg */
+.card-5 { background-image: url('https://vieclam123.vn/ckfinder/userfiles/images/images/hien-tuong-trang-xanh.jpg'); } /* Studienkolleg */
+.card-6 { background-image: url('https://png.pngtree.com/thumb_back/fh260/background/20220425/pngtree-black-night-sky-with-illustrated-space-star-background-image_1078346.jpg'); } /* Über Uns */
+
+  </style>
+</head>
+<body>
+  <!-- Yêu cầu bảo mật mật khẩu -->
+  <div id="passwordOverlay" role="dialog" aria-modal="true" aria-labelledby="passwordTitle" tabindex="-1">
+    <img src="airfir1.png" alt="AirFir Logo" class="password-logo" />
+    <h2 id="passwordTitle">Geben Sie das Passwort ein, um auf die Webseite zuzugreifen</h2>
+    <input
+      type="password"
+      id="passwordInput"
+      aria-describedby="passwordError"
+      aria-label="Zugangspasswort"
+      autocomplete="current-password"
+      placeholder="Passwort eingeben"
+      autofocus
+      required
+    />
+    <button id="passwordSubmitBtn">Einloggen</button>
+    <div id="passwordError" role="alert" aria-live="assertive"></div>
+  </div>
+ 
+
+ 
+  <div id="app" aria-hidden="true">
+    <!-- Thanh menu ngang với logo AirFir -->
+    <header>
+      <div id="logo" aria-label="Thương hiệu AirFir">AirFir</div>
+      <nav role="navigation" aria-label="Menu chính">
+        <a href="lotrinh.html" tabindex="0">Schritt</a>
+         <a href="dokument.html" tabindex="0">Dokumenten</a>
+        <a href="wortschatz.html" tabindex="0">Wortschatz</a>
+        <a href="studienkolleg.html" tabindex="0">Studienkolleg</a>
+        <a href="prüfung.html" tabindex="0">Prüfung(Goethe)</a>
+        <a href="uns.html" tabindex="0">Über Uns</a>
+      </nav>
+      <button id="logoutBtn" style="
+        margin-left: 12px;
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        background: #e74c3c;
+       color: white;
+       border: none;
+       border-radius: 8px;
+       cursor: pointer;
+        transition: background-color 0.3s ease;">Đăng xuất</button>
+    </header>
+
+  <main>
+  <div class="card-grid">
+    <div class="card card-1" onclick="location.href='lotrinh.html'">Schritt</div>
+    <div class="card card-2" onclick="location.href='dokument.html'">Dokumenten</div>
+    <div class="card card-3" onclick="location.href='wortschatz.html'">Wortschatz</div>
+    <div class="card card-4" onclick="location.href='studienkolleg.html'">Studienkolleg</div>
+    <div class="card card-5" onclick="location.href='prüfung.html'">Prüfung (Goethe)</div>
+    <div class="card card-6" onclick="location.href='uns.html'">Über Uns</div>
+  </div>
+</main>
+
+  <script>
+
+
+    if (localStorage.getItem('isAuthenticated') === 'true') {
+  document.getElementById('passwordOverlay').style.display = 'none';
+  document.getElementById('app').setAttribute('aria-hidden', 'false');
+} else {
+  document.getElementById('passwordOverlay').style.display = 'flex';
+  document.getElementById('app').setAttribute('aria-hidden', 'true');
+}
+
+
+(function () {
+  const PASSWORD = 'airfir2005';
+
+  const overlay = document.getElementById('passwordOverlay');
+  const input = document.getElementById('passwordInput');
+  const submitBtn = document.getElementById('passwordSubmitBtn');
+  const errorMsg = document.getElementById('passwordError');
+  const app = document.getElementById('app');
+
+  const menuLinks = document.querySelectorAll('nav a[data-page]');
+  const pages = document.querySelectorAll('main .page');
+  const subpage = document.getElementById('subpage');
+  const backBtn = document.getElementById('backBtn');
+  const subpageTitle = document.getElementById('subpageTitle');
+  const subpageContent = document.getElementById('subpageContent');
+
+  let currentPage = null;
+  let subpageHistory = null;
+
+  // Trap focus trong overlay
+  function trapFocus(element) {
+    const focusable = element.querySelectorAll(
+      'a[href], input:not([disabled]), button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+
+    element.addEventListener('keydown', function (e) {
+      if (e.key !== 'Tab') return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) {
+          last.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === last) {
+          first.focus();
+          e.preventDefault();
+        }
+      }
+    });
+  }
+
+  trapFocus(overlay);
+
+  // Hiển thị một trang chính
+  function showPage(pageId) {
+    pages.forEach(p => p.classList.remove('active'));
+    const page = document.getElementById('page-' + pageId);
+    if (page) {
+      page.classList.add('active');
+      currentPage = pageId;
+      menuLinks.forEach(link => {
+        if (link.dataset.page === pageId) {
+          link.setAttribute('aria-current', 'page');
+        } else {
+          link.removeAttribute('aria-current');
+        }
+      });
+      subpage.classList.remove('active');
+      subpageTitle.textContent = '';
+      subpageContent.textContent = '';
+      subpageHistory = null;
+      const h1 = page.querySelector('h1');
+      if (h1) h1.focus?.();
+    }
+  }
+
+  function showInitialPage() {
+    showPage('A1');
+  }
+
+  // Nội dung từng subpage
+  
+
+  // Hiển thị trang chi tiết (subpage)
+  function showSubpage(subpageId) {
+    const content = subpageContents[subpageId];
+    subpage.classList.add('active');
+    subpageHistory = currentPage;
+    subpageTitle.textContent = subpageId;
+
+    if (Array.isArray(content)) {
+      const cardsHTML = content.map(item => `
+        <div class="card">
+          <div>${item.title}</div>
+          <a href="${item.link}" target="_blank" rel="noopener noreferrer">Mở tài liệu</a>
+        </div>
+      `).join('');
+      subpageContent.innerHTML = `<div class="card-container">${cardsHTML}</div>`;
+    } else {
+      subpageContent.textContent = content;
+    }
+  }
+
+  // Mở khóa trang
+  function unlock() {
+    localStorage.setItem('isAuthenticated', 'true');
+    overlay.style.display = 'none';
+    app.setAttribute('aria-hidden', 'false');
+    input.value = '';
+    input.blur();
+    showInitialPage();
+  }
+
+  function handleLogin() {
+    const val = input.value.trim();
+    if (val === PASSWORD) {
+      errorMsg.textContent = '';
+      unlock();
+    } else {
+      errorMsg.textContent = 'Das Passwort ist falsch. Bitte versuchen Sie es erneut :((( ';
+      input.select();
+    }
+  }
+
+  function logout() {
+  localStorage.removeItem('isAuthenticated');
+  location.reload(); // Hoặc chuyển về trang chủ
+}
+
+
+  submitBtn.addEventListener('click', handleLogin);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleLogin();
+    }
+  });
+
+  // Giữ focus trong input khi chưa mở khóa
+  document.addEventListener('keydown', (e) => {
+    if (overlay.style.display !== 'none' && e.target !== input) {
+      input.focus();
+    }
+  });
+
+  // Xử lý menu click
+  menuLinks.forEach(link => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const page = link.dataset.page;
+      if (!page) return;
+      showPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  });
+
+  // Xử lý card click
+  const cards = document.querySelectorAll('.card');
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const key = card.dataset.subpage;
+      if (key && subpageContents[key]) {
+        showSubpage(key);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+    card.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        card.click();
+      }
+    });
+  });
+
+
+const logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', () => {
+    logout(); // Gọi hàm logout để thực hiện đăng xuất
+  });
+}
+
+
+
+  backBtn.addEventListener('click', () => {
+    if (subpageHistory) {
+      showPage(subpageHistory);
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function () {
+  const dropBtn = document.querySelector('.dropbtn');
+  const dropdownContent = document.querySelector('.dropdown-content');
+
+  dropBtn.addEventListener('click', function (e) {
+    e.stopPropagation(); // Ngăn sự kiện lan ra ngoài
+    dropdownContent.classList.toggle('show');
+  });
+
+  // Ẩn dropdown khi click ra ngoài
+  document.addEventListener('click', function () {
+    dropdownContent.classList.remove('show');
+  });
+});
+
+
+
+
+     
+})();
+</script>
+
+</body>
+</html>
+
